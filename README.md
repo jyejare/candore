@@ -1,2 +1,2 @@
-# candor
+# candore
 The Data Integrity Tool
