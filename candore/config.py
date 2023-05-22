@@ -1,0 +1,26 @@
+from pathlib import Path, PurePath
+from dynaconf import Dynaconf
+from dynaconf.validator import Validator
+
+CURRENT_DIRECTORY = Path().resolve()
+settings_file = PurePath(CURRENT_DIRECTORY, 'settings.yaml')
+# Initialize and Configure Settings
+settings = Dynaconf(
+    core_loaders=["YAML"],
+    envvar_prefix="CANDORE",
+    settings_file=settings_file,
+    envless_mode=True,
+    lowercase_read=True,
+)
+
+
+def validate_settings():
+    provider_settings = [
+        f"candore.{setting_key}" for setting_key in settings.to_dict().get('CANDORE')
+    ]
+    settings.validators.register(Validator(*provider_settings, ne=None))
+    try:
+        settings.validators.validate()
+        print(f"The settings are initialized and validated !")
+    except Exception as ecc:
+        raise ecc

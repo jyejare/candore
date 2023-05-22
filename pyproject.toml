@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/candore",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "/candore",
+]
+
+[project]
+name = "candore"
+dynamic = ["version"]
+readme = "README.md"
+license-files = { paths = ["LICENSE"] }
+authors = [
+    { name = "Jitendra Yejare" },
+]
+maintainers = [
+    { name = "Jitendra Yejare" },
+]
+keywords = [
+    "distutils",
+    "hatch",
+    "api",
+    "data",
+    "upgrades",
+    "validation"
+]
+dependencies = [
+    "click",
+    "dynaconf",
+]
+
+[project.optional-dependencies]
+test = [
+    "mock",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-variables",
+    "coveralls",
+]
+
+[project.scripts]
+candore = "candore.cli:candore"

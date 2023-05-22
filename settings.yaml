@@ -1,0 +1,6 @@
+candore:
+  base_url: http://ip-10-0-168-101.rhos-01.prod.psi.rdu2.redhat.com
+  product_name: satellite
+  version: 6.13
+  docpath: /apidoc
+  parser: apipie
