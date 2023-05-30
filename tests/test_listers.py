@@ -1,4 +1,4 @@
-from candore.api_lister import APILister
+from candore.modules.api_lister import APILister
 
 
 class TestLister:

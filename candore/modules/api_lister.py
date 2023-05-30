@@ -30,3 +30,6 @@ class APILister:
 
         self.list_endpoints = list_endpoints
         return list_endpoints
+
+
+api_endpoints = APILister()

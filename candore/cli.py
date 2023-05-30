@@ -1,6 +1,8 @@
 import click
-from .api_lister import APILister
+from candore.modules.api_lister import APILister
+from candore.modules.extractor import print_entities
 from pprint import pprint
+import asyncio
 
 # Click Interactive for Cloud Resources Cleanup
 
@@ -30,7 +32,8 @@ def apis(ctx):
 @candore.command(help="Extract and save data using API lister endpoints")
 @click.pass_context
 def extract(ctx):
-    pass
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(print_entities())
 
 
 @candore.command(help="Compare pre and post upgrade data")

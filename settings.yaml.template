@@ -1,6 +1,8 @@
 candore:
   base_url:
+  username:
+  password:
   product_name:
   version:
-  docpath:
-  parser:
+  docpath: /apidoc
+  parser: apipie
