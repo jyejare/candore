@@ -32,4 +32,4 @@ class APILister:
         return list_endpoints
 
 
-api_endpoints = APILister()
+apilister = APILister()

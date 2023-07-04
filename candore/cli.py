@@ -1,6 +1,6 @@
 import click
 from candore.modules.api_lister import APILister
-from candore.modules.extractor import print_entities
+from candore.modules.extractor import save_all_entities
 from pprint import pprint
 import asyncio
 
@@ -30,10 +30,12 @@ def apis(ctx):
 
 
 @candore.command(help="Extract and save data using API lister endpoints")
+@click.option("--mode", type=str, help="The mode must be 'pre' or 'post'")
 @click.pass_context
-def extract(ctx):
+def extract(ctx, mode):
+
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(print_entities())
+    loop.run_until_complete(save_all_entities(mode=mode))
 
 
 @candore.command(help="Compare pre and post upgrade data")

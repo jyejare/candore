@@ -1,0 +1,11 @@
+components:
+  ignore:
+    - content_unit
+  dependencies:
+    activation_keys: organization
+    content_credentials: organization
+    products: organization
+    repository_sets: organization
+    subscriptions: organization
+    sync_plans: organization
+    bootdisk: organization

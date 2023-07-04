@@ -1,6 +1,8 @@
 candore:
-  base_url: http://ip-10-0-168-101.rhos-01.prod.psi.rdu2.redhat.com
+  base_url: http://ip-10-0-167-207.rhos-01.prod.psi.rdu2.redhat.com
+  username: admin
+  password: changeme
   product_name: satellite
-  version: 6.13
+  version: 6.14
   docpath: /apidoc
   parser: apipie
