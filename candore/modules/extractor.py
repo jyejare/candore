@@ -1,14 +1,8 @@
 import aiohttp
-import asyncio
-import json
-import click
-from pathlib import Path
 
 from candore.config import settings
-from candore.errors import ModeError
 from functools import cached_property
-from .api_lister import apilister
-
+import asyncio
 
 class Extractor:
     def __init__(self, apilister=None):
@@ -137,19 +131,3 @@ class Extractor:
                 all_data[component] = comp_entities
         return all_data
 
-
-async def save_all_entities(mode):
-    if mode not in ['pre', 'post']:
-        raise ModeError("Extracting mode must be 'pre' or 'post'")
-
-    async with Extractor(apilister=apilister) as extractor:
-        data = await extractor.extract_all_entities()
-
-    if not data:
-        click.echo('Entities data is not data found!')
-
-    file_path = Path(f'{mode}_entities.json')
-    with file_path.open(mode='w') as entfile:
-        json.dump(data, entfile)
-    click.echo(f'Entities data saved to {file_path}')
-    click.echo(data.keys())

@@ -26,3 +26,6 @@ def validate_settings():
         print(f"The settings are initialized and validated !")
     except Exception as ecc:
         raise ecc
+
+
+validate_settings()

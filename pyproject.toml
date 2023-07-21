@@ -40,6 +40,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+satellite = ["satellite.can"]
 test = [
     "mock",
     "pytest",

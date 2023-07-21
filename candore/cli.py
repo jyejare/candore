@@ -1,7 +1,7 @@
 import click
-from candore.modules.api_lister import APILister
-from candore.modules.extractor import save_all_entities
 from pprint import pprint
+from candore.candore import list_endpoints
+from candore.candore import save_all_entities
 import asyncio
 
 # Click Interactive for Cloud Resources Cleanup
@@ -24,16 +24,15 @@ def candore(ctx, version):
 @candore.command(help="List API lister endpoints from Product")
 @click.pass_context
 def apis(ctx):
-    lister = APILister()
-    print('\nList of lister endpoints from product are: \n')
-    pprint(lister.lister_endpoints())
+    """List API lister endpoints from Product"""
+    print("List of API lister endpoints from Product")
+    pprint(list_endpoints())
 
 
 @candore.command(help="Extract and save data using API lister endpoints")
 @click.option("--mode", type=str, help="The mode must be 'pre' or 'post'")
 @click.pass_context
 def extract(ctx, mode):
-
     loop = asyncio.get_event_loop()
     loop.run_until_complete(save_all_entities(mode=mode))
 

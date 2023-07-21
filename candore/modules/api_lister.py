@@ -7,7 +7,6 @@ from candore.config import validate_settings
 class APILister:
 
     def __init__(self):
-        validate_settings()
         self.explorer = AsyncExplorer(name=settings.candore.product_name, version=settings.candore.version, host_url=settings.candore.base_url, base_path=settings.candore.docpath, parser=settings.candore.parser)
         self.list_endpoints = {}
 
