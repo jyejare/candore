@@ -37,6 +37,8 @@ keywords = [
 dependencies = [
     "click",
     "dynaconf",
+    "asyncio",
+    "aiohttp",
 ]
 
 [project.optional-dependencies]

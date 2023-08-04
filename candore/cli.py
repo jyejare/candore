@@ -2,6 +2,7 @@ import click
 from pprint import pprint
 from candore.candore import list_endpoints
 from candore.candore import save_all_entities
+from candore.candore import compare_entities
 import asyncio
 
 # Click Interactive for Cloud Resources Cleanup
@@ -40,7 +41,7 @@ def extract(ctx, mode):
 @candore.command(help="Compare pre and post upgrade data")
 @click.pass_context
 def compare(ctx):
-    pass
+    compare_entities()
 
 
 @candore.command(help="Report Variation between upgrades")
