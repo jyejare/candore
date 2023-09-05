@@ -39,9 +39,11 @@ def extract(ctx, mode):
 
 
 @candore.command(help="Compare pre and post upgrade data")
+@click.option("--pre", type=str, help="The pre upgrade json file")
+@click.option("--post", type=str, help="The post upgrade json file")
 @click.pass_context
-def compare(ctx):
-    compare_entities()
+def compare(ctx, pre, post):
+    compare_entities(pre_file=pre, post_file=post)
 
 
 @candore.command(help="Report Variation between upgrades")
