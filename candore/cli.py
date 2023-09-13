@@ -41,15 +41,11 @@ def extract(ctx, mode):
 @candore.command(help="Compare pre and post upgrade data")
 @click.option("--pre", type=str, help="The pre upgrade json file")
 @click.option("--post", type=str, help="The post upgrade json file")
+@click.option("-o", "--output", type=str, help="The output file name")
+@click.option("-t", "--report-type", type=str, default='json', help="The type of report GSheet, JSON, or webpage")
 @click.pass_context
-def compare(ctx, pre, post):
-    compare_entities(pre_file=pre, post_file=post)
-
-
-@candore.command(help="Report Variation between upgrades")
-@click.pass_context
-def report(ctx):
-    pass
+def compare(ctx, pre, post, output, report_type):
+    compare_entities(pre_file=pre, post_file=post, output=output, report_type=report_type)
 
 
 if __name__ == "__main__":

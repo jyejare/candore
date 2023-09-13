@@ -39,6 +39,7 @@ dependencies = [
     "dynaconf",
     "asyncio",
     "aiohttp",
+    "flask"
 ]
 
 [project.optional-dependencies]

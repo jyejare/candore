@@ -5,6 +5,7 @@ class Comparator:
 
     def __init__(self):
         self.big_key = []
+        self.big_compare = {}
 
     def remove_non_variant_key(self, key):
         reversed_bk = self.big_key[::-1]
@@ -27,6 +28,11 @@ class Comparator:
             return
         self.big_key = self.big_key[:id_index]
 
+    def record_variation(self, pre, post):
+        full_path = '/'.join(self.big_key)
+        # print("Key: " + full_path + " Pre: " + str(pre_data) + " Post: " + str(post_data))
+        self.big_compare.update({full_path: {'pre': pre, 'post': post}})
+
 
     def _is_data_type_dict(self, pre, post):
         for pre_key in pre:
@@ -35,6 +41,7 @@ class Comparator:
                 self.compare_all_pres_with_posts(pre[key], post[key], unique_key=key)
             else:
                 print(f"Key is not found in post_data: {pre_key}")
+                self.big_compare.update({'Key is not found in post_data': {'pre': pre_key, 'post': None}})
 
     def _is_data_type_list(self, pre, post, unique_key=''):
         for pre_entity in pre:
@@ -57,7 +64,7 @@ class Comparator:
                     self.remove_path(pre_entity[list(pre_entity.keys())[0]])
             else:
                 if pre_entity not in post:
-                    print("Key: " + '-'.join(self.big_key) + " Pre List: " + str(pre) + " changed in Post: " + str(post))
+                    self.record_variation(pre, post)
         self.remove_path(unique_key)
 
     def compare_all_pres_with_posts(self, pre_data, post_data, unique_key=''):
@@ -69,7 +76,7 @@ class Comparator:
             self._is_data_type_list(pre_data, post_data, unique_key=unique_key)
         else:
             if pre_data != post_data:
-                print("Key: " + '-'.join(self.big_key) + " Pre: " + str(pre_data) + " Post: " + str(post_data))
+                self.record_variation(pre_data, post_data)
             self.remove_non_variant_key(unique_key)
 
     def compare_json(self, pre_file, post_file):
@@ -82,3 +89,4 @@ class Comparator:
             post_data = json.load(fpost)
 
         self.compare_all_pres_with_posts(pre_data, post_data)
+        return self.big_compare

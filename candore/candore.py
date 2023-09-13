@@ -2,6 +2,7 @@ from candore.modules.api_lister import APILister
 from candore.modules.extractor import Extractor
 from candore.modules.comparator import Comparator
 from candore.errors import ModeError
+from candore.modules.report import Reporting
 import click
 import json
 from pathlib import Path
@@ -50,6 +51,8 @@ async def save_all_entities(mode, api_lister=api_lister):
     click.echo(f'Entities data saved to {file_path}')
 
 
-def compare_entities(pre_file=None, post_file=None):
+def compare_entities(pre_file=None, post_file=None, output=None, report_type=None):
     comp = Comparator()
-    comp.compare_json(pre_file=pre_file, post_file=post_file)
+    results = comp.compare_json(pre_file=pre_file, post_file=post_file)
+    reporter = Reporting(results=results)
+    reporter.generate_report(output_file=output, output_type=report_type)
