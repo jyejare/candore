@@ -37,9 +37,13 @@ keywords = [
 dependencies = [
     "click",
     "dynaconf",
+    "asyncio",
+    "aiohttp",
+    "flask"
 ]
 
 [project.optional-dependencies]
+satellite = ["satellite.can"]
 test = [
     "mock",
     "pytest",

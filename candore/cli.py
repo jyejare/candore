@@ -1,7 +1,8 @@
 import click
-from candore.modules.api_lister import APILister
-from candore.modules.extractor import save_all_entities
 from pprint import pprint
+from candore.candore import list_endpoints
+from candore.candore import save_all_entities
+from candore.candore import compare_entities
 import asyncio
 
 # Click Interactive for Cloud Resources Cleanup
@@ -24,30 +25,27 @@ def candore(ctx, version):
 @candore.command(help="List API lister endpoints from Product")
 @click.pass_context
 def apis(ctx):
-    lister = APILister()
-    print('\nList of lister endpoints from product are: \n')
-    pprint(lister.lister_endpoints())
+    """List API lister endpoints from Product"""
+    print("List of API lister endpoints from Product")
+    pprint(list_endpoints())
 
 
 @candore.command(help="Extract and save data using API lister endpoints")
 @click.option("--mode", type=str, help="The mode must be 'pre' or 'post'")
 @click.pass_context
 def extract(ctx, mode):
-
     loop = asyncio.get_event_loop()
     loop.run_until_complete(save_all_entities(mode=mode))
 
 
 @candore.command(help="Compare pre and post upgrade data")
+@click.option("--pre", type=str, help="The pre upgrade json file")
+@click.option("--post", type=str, help="The post upgrade json file")
+@click.option("-o", "--output", type=str, help="The output file name")
+@click.option("-t", "--report-type", type=str, default='json', help="The type of report GSheet, JSON, or webpage")
 @click.pass_context
-def compare(ctx):
-    pass
-
-
-@candore.command(help="Report Variation between upgrades")
-@click.pass_context
-def report(ctx):
-    pass
+def compare(ctx, pre, post, output, report_type):
+    compare_entities(pre_file=pre, post_file=post, output=output, report_type=report_type)
 
 
 if __name__ == "__main__":
