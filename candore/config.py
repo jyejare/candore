@@ -23,7 +23,6 @@ def validate_settings():
     settings.validators.register(Validator(*provider_settings, ne=None))
     try:
         settings.validators.validate()
-        print(f"The settings are initialized and validated !")
     except Exception as ecc:
         raise ecc
 

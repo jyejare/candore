@@ -2,7 +2,8 @@ candore:
   base_url:
   username:
   password:
-  product_name:
-  version:
+  product_name: satellite
+  version: 6.14
   docpath: /apidoc
   parser: apipie
+  var_file: "@jinja conf/variations/{{this.candore.version | replace('.', '_')}}.yaml"

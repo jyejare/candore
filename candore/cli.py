@@ -45,9 +45,10 @@ def extract(ctx, mode, output, full):
 @click.option("--post", type=str, help="The post upgrade json file")
 @click.option("-o", "--output", type=str, help="The output file name")
 @click.option("-t", "--report-type", type=str, default='json', help="The type of report GSheet, JSON, or webpage")
+@click.option("--record-evs", is_flag=True, help="Record Expected Variations in reporting")
 @click.pass_context
-def compare(ctx, pre, post, output, report_type):
-    compare_entities(pre_file=pre, post_file=post, output=output, report_type=report_type)
+def compare(ctx, pre, post, output, report_type, record_evs):
+    compare_entities(pre_file=pre, post_file=post, output=output, report_type=report_type, record_evs=record_evs)
 
 
 if __name__ == "__main__":

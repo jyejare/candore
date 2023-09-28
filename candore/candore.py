@@ -41,8 +41,10 @@ async def save_all_entities(mode, output_file, full):
     click.echo(f'Entities data saved to {file_path}')
 
 
-def compare_entities(pre_file=None, post_file=None, output=None, report_type=None):
+def compare_entities(pre_file=None, post_file=None, output=None, report_type=None, record_evs=None):
     comp = Comparator()
+    if record_evs:
+        comp.record_evs = True
     results = comp.compare_json(pre_file=pre_file, post_file=post_file)
     reporter = Reporting(results=results)
     reporter.generate_report(output_file=output, output_type=report_type)
