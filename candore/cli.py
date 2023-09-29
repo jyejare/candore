@@ -32,10 +32,12 @@ def apis(ctx):
 
 @candore.command(help="Extract and save data using API lister endpoints")
 @click.option("--mode", type=str, help="The mode must be 'pre' or 'post'")
+@click.option("-o", "--output", type=str, help="The output file name")
+@click.option("--full", is_flag=True, help="Extract data from all the pages of a component")
 @click.pass_context
-def extract(ctx, mode):
+def extract(ctx, mode, output, full):
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(save_all_entities(mode=mode))
+    loop.run_until_complete(save_all_entities(mode=mode, output_file=output, full=full))
 
 
 @candore.command(help="Compare pre and post upgrade data")

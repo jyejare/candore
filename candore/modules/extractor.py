@@ -18,6 +18,7 @@ class Extractor:
         self.connector = aiohttp.TCPConnector(ssl=self.verify_ssl)
         self.client = None
         self.apilister = apilister
+        self.full = False
 
     @cached_property
     def dependent_components(self):
@@ -46,28 +47,48 @@ class Extractor:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self._end_session()
 
-    async def fetch_component_entities(self, **comp_params):
-        endpoint = comp_params.get('endpoint', None)
-        data = comp_params.get('data', None)
-        dependency = comp_params.get('dependency', None)
-        get_params = {'url': self.base+'/'+endpoint, 'params': data}
-        if data:
-            data = {f'{dependency}_id': data}
-            get_params['params'] = data
+    async def paged_results(self, **get_params):
         async with self.client.get(**get_params) as response:
             if response.status == 200:
-                data = await response.json()
-                return data
-            else:
-                # response_text = await response.text()
-                return None
+                _paged_results = await response.json()
+                _paged_results = _paged_results.get('results')
+                return _paged_results
+
+    async def fetch_component_entities(self, **comp_params):
+        entity_data = []
+        endpoint = comp_params.get('endpoint', None)
+        data = comp_params.get('data')
+        dependency = comp_params.get('dependency', None)
+        _request = {'url': self.base+'/'+endpoint, 'params': {}}
+        if data:
+            _request['params'].update({f'{dependency}_id': data})
+        async with self.client.get(**_request) as response:
+            if response.status == 200:
+                results = await response.json()
+                if 'results' in results:
+                    entities = results.get('results')
+                    entity_data.extend(entities)
+                else:
+                    # Return an empty directory for endpoints like services, api etc
+                    # which does not have results
+                    return entity_data
+        # If the entity has multiple pages, fetch them all
+        if self.full:
+            total_pages = results.get('total') // results.get('per_page') + 1
+            if total_pages > 1:
+                print(f'Endpoint {endpoint} has {total_pages} pages. This would take some time ....')
+                for page in range(2, total_pages+1):
+                    _request['params'].update({'page': page})
+                    page_entities = await self.paged_results(**_request)
+                    entity_data.extend(page_entities)
+        return entity_data
 
     async def dependency_ids(self, dependency):
         # All the Ids of a specific dependency
         # e.g Organization IDs 1, 2, 3, 4
         endpoint = self.api_endpoints[f'{dependency}s'][0]
         depe_lists = await self.fetch_component_entities(endpoint=endpoint)
-        depen_ids = [dep_dict['id'] for dep_dict in depe_lists['results']]
+        depen_ids = [dep_dict['id'] for dep_dict in depe_lists]
         return depen_ids
 
 
@@ -78,7 +99,7 @@ class Extractor:
         :param component_endpoints:
         :return:
         """
-        data = None
+        data = {}
         dependency = None
         # remove ignored endpoints
         _last = component_endpoint.rsplit('/')[-1]
@@ -108,13 +129,9 @@ class Extractor:
                             endpoint=comp_params['endpoint'], dependency=comp_params['dependency'], data=data_point)
                         if not depen_data:
                             continue
-                        depen_data = depen_data.get('results', None)
-                        if depen_data:
-                            entities.extend(depen_data)
+                        entities.extend(depen_data)
                 else:
-                    data = await self.fetch_component_entities(**comp_params)
-                    if data:
-                        entities = data.get('results', None)
+                    entities = await self.fetch_component_entities(**comp_params)
             if entities:
                 comp_data.extend(entities)
         return comp_data
@@ -130,4 +147,3 @@ class Extractor:
                 comp_entities = await self.process_entities(endpoints=endpoints)
                 all_data[component] = comp_entities
         return all_data
-
