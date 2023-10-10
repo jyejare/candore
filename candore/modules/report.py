@@ -77,9 +77,9 @@ class Reporting:
         output_file = Path(output_file)
         # Convert json to csv and write to output file
         csv_writer = csv.writer(output_file.open('w'))
-        csv_writer.writerow(['Variation Path', 'Pre-Upgrade', 'Post-Upgrade'])
+        csv_writer.writerow(['Variation Path', 'Pre-Upgrade', 'Post-Upgrade', 'Variation'])
         for var_path, vals in self.results.items():
-            csv_writer.writerow([var_path, vals['pre'], vals['post']])
+            csv_writer.writerow([var_path, vals['pre'], vals['post'], vals['variation']])
         print("Wrote CSV report to {}".format(output_file))
         print("CSV report contains {} results".format(len(self.results)))
 
