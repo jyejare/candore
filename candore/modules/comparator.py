@@ -1,8 +1,6 @@
 import json
-import yaml
-from pathlib import Path
-from candore.config import settings, CURRENT_DIRECTORY
-from functools import cached_property, lru_cache
+from candore.utils import last_index_of_element
+from candore.modules.variatons import Variations
 
 
 class Comparator:
@@ -11,42 +9,17 @@ class Comparator:
         self.big_key = []
         self.big_compare = {}
         self.record_evs = False
-
-    @cached_property
-    def variations(self):
-        templates_path = Path(CURRENT_DIRECTORY, settings.candore.var_file)
-        if not templates_path.exists():
-            print(f"The file {templates_path} does not exist.")
-        with templates_path.open() as yaml_file:
-            yaml_data = yaml.safe_load(yaml_file)
-        return yaml_data
-
-    def get_paths(self, variations, prefix='', separator='/'):
-        paths = []
-        if isinstance(variations, dict):
-            for key, value in variations.items():
-                paths.extend(self.get_paths(value, f"{prefix}{key}{separator}"))
-        elif isinstance(variations, list):
-            for item in variations:
-                paths.extend(self.get_paths(item, prefix, separator))
-        else:
-            paths.append(f'{prefix}{variations}')
-
-        return paths
+        self.variations = Variations()
+        self.expected_variations = self.variations.expected_variations
+        self.skipped_variations = self.variations.skipped_variations
 
     def remove_non_variant_key(self, key):
         reversed_bk = self.big_key[::-1]
         reversed_bk.remove(key)
         self.big_key = reversed_bk[::-1]
 
-    def last_index_of_element(self, arr, element):
-        for i in range(len(arr) - 1, -1, -1):
-            if arr[i] == element:
-                return i
-        return -1
-
     def remove_path(self, identy):
-        id_index = self.last_index_of_element(self.big_key, identy)
+        id_index = last_index_of_element(self.big_key, identy)
         if id_index == -1:
             return
         self.big_key = self.big_key[:id_index]
@@ -55,13 +28,11 @@ class Comparator:
         big_key = [str(itm) for itm in self.big_key]
         full_path = '/'.join(big_key)
         var_full_path = '/'.join([itm for itm in self.big_key if not isinstance(itm, int)])
-        expected_variations = self.get_paths(variations=self.variations.get('expected_variations'))
-        skipped_variations = self.get_paths(variations=self.variations.get('skipped_variations'))
-        if var_full_path in expected_variations or var_full_path in skipped_variations:
+        if var_full_path in self.expected_variations or var_full_path in self.skipped_variations:
             if self.record_evs:
                 variation = {'pre': pre, 'post': post, 'variation': var_details or 'Expected(A)'}
                 self.big_compare.update({full_path: variation})
-        elif var_full_path not in expected_variations and var_full_path not in skipped_variations:
+        elif var_full_path not in self.expected_variations and var_full_path not in self.skipped_variations:
             variation = {'pre': pre, 'post': post, 'variation': var_details or ''}
             self.big_compare.update({full_path: variation})
 
