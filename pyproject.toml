@@ -35,11 +35,15 @@ keywords = [
     "validation"
 ]
 dependencies = [
+    "aiohttp",
+    "asyncio",
     "click",
     "dynaconf",
-    "asyncio",
-    "aiohttp",
-    "flask"
+    "logzero",
+    "lxml",
+    "flask",
+    "requests",
+    "PyYAML",
 ]
 
 [project.optional-dependencies]
