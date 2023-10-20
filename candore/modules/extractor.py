@@ -22,11 +22,13 @@ class Extractor:
 
     @cached_property
     def dependent_components(self):
-        return settings.components.dependencies
+        if hasattr(settings, 'components'):
+            return settings.components.dependencies
 
     @cached_property
     def ignore_components(self):
-        return settings.components.ignore
+        if hasattr(settings, 'components'):
+            return settings.components.ignore
 
     @cached_property
     def api_endpoints(self):
@@ -60,7 +62,7 @@ class Extractor:
         data = comp_params.get('data')
         dependency = comp_params.get('dependency', None)
         _request = {'url': self.base+'/'+endpoint, 'params': {}}
-        if data:
+        if data and dependency:
             _request['params'].update({f'{dependency}_id': data})
         async with self.client.get(**_request) as response:
             if response.status == 200:
@@ -104,10 +106,10 @@ class Extractor:
         # remove ignored endpoints
         _last = component_endpoint.rsplit('/')[-1]
         # Ignorable endpoint
-        if _last in self.ignore_components:
+        if self.ignore_components and _last in self.ignore_components:
             return
         # Return results for components those has dependencies
-        if _last in self.dependent_components.keys():
+        if self.dependent_components and _last in self.dependent_components.keys():
             dependency = self.dependent_components[_last]
             data = await self.dependency_ids(dependency)
         return {'endpoint': component_endpoint, 'data': data, 'dependency': dependency}
@@ -126,7 +128,7 @@ class Extractor:
                 if isinstance(comp_params.get('data'), list):
                     for data_point in comp_params.get('data'):
                         depen_data = await self.fetch_component_entities(
-                            endpoint=comp_params['endpoint'], dependency=comp_params['dependency'], data=data_point)
+                            endpoint=comp_params['endpoint'], dependency=comp_params.get('dependency'), data=data_point)
                         if not depen_data:
                             continue
                         entities.extend(depen_data)

@@ -74,13 +74,16 @@ class AsyncExplorer:
             logger.debug(f"Scraping {link[1]}")
             self._data[link[1]] = self.parser.scrape_content(content)
 
-    def save_data(self, return_path=False):
-        """convert the stored data into yaml-friendly dict and save"""
+    def yaml_data(self):
         yaml_data = self.parser.yaml_format(self._data)
         if not yaml_data:
             logger.warning("No data to be saved. Exiting.")
             return
+        return yaml_data
 
+    def save_data(self, return_path=False):
+        """convert the stored data into yaml-friendly dict and save"""
+        yaml_data = self.yaml_data()
         if self.compact:
             from apix.diff import VersionDiff
 

@@ -1,0 +1,17 @@
+expected_variations: []
+#  hosts:
+#    - realm_id
+#    - capabilities
+#  smart_proxies:
+#    features: name
+
+skipped_variations:
+  hosts:
+    puppet_proxy:
+      content_facet_attributes:
+        errata_counts:
+          applicable:
+            content_view:
+              lifecycle_environment:
+                subscription_facet_attributes:
+                  reported_data: uptime_seconds
