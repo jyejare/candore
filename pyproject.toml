@@ -8,11 +8,13 @@ source = "vcs"
 [tool.hatch.build.targets.sdist]
 include = [
     "/candore",
+    "/apix",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = [
     "/candore",
+    "/apix",
 ]
 
 [project]
