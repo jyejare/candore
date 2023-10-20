@@ -1,0 +1,34 @@
+# CI stages to execute against Pull Requests
+name: Release to PyPi
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release_to_pypi:
+    name: Release to PyPi
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set Up Python3
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Setup and Build
+        run: |
+          pip install -U pip wheel twine hatch
+          hatch build
+          twine check dist/*
+
+      - name: Release to PyPi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.CANDORE_PYPI_TOKEN }}
+          skip_existing: true
