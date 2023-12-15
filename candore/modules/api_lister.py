@@ -1,12 +1,9 @@
 from apix.explore import AsyncExplorer
 
-from candore.config import settings
-from candore.config import validate_settings
-
 
 class APILister:
 
-    def __init__(self):
+    def __init__(self, settings):
         self.explorer = AsyncExplorer(name=settings.candore.product_name, version=settings.candore.version, host_url=settings.candore.base_url, base_path=settings.candore.docpath, parser=settings.candore.parser)
         self.list_endpoints = {}
 
@@ -30,5 +27,3 @@ class APILister:
         self.list_endpoints = list_endpoints
         return list_endpoints
 
-
-apilister = APILister()

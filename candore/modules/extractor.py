@@ -1,18 +1,18 @@
 import aiohttp
 
-from candore.config import settings
 from functools import cached_property
 import asyncio
 
 class Extractor:
-    def __init__(self, apilister=None):
+    def __init__(self, settings, apilister=None):
         """Extract and save data using API lister endpoints
 
         :param apilister: APILister object
         """
-        self.username = settings.candore.username
-        self._passwd = settings.candore.password
-        self.base = settings.candore.base_url
+        self.settings = settings
+        self.username = self.settings.candore.username
+        self._passwd = self.settings.candore.password
+        self.base = self.settings.candore.base_url
         self.verify_ssl = False
         self.auth = aiohttp.BasicAuth(self.username, self._passwd)
         self.connector = aiohttp.TCPConnector(ssl=self.verify_ssl)
@@ -22,13 +22,13 @@ class Extractor:
 
     @cached_property
     def dependent_components(self):
-        if hasattr(settings, 'components'):
-            return settings.components.dependencies
+        if hasattr(self.settings, 'components'):
+            return self.settings.components.dependencies
 
     @cached_property
     def ignore_components(self):
-        if hasattr(settings, 'components'):
-            return settings.components.ignore
+        if hasattr(self.settings, 'components'):
+            return self.settings.components.ignore
 
     @cached_property
     def api_endpoints(self):
@@ -113,7 +113,6 @@ class Extractor:
             dependency = self.dependent_components[_last]
             data = await self.dependency_ids(dependency)
         return {'endpoint': component_endpoint, 'data': data, 'dependency': dependency}
-
 
     async def process_entities(self, endpoints):
         """

@@ -5,11 +5,11 @@ from candore.modules.variatons import Variations
 
 class Comparator:
 
-    def __init__(self):
+    def __init__(self, settings):
         self.big_key = []
         self.big_compare = {}
         self.record_evs = False
-        self.variations = Variations()
+        self.variations = Variations(settings)
         self.expected_variations = self.variations.expected_variations
         self.skipped_variations = self.variations.skipped_variations
 

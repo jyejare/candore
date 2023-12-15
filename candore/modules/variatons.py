@@ -4,11 +4,14 @@ A module responsible for calculating expected and skipped variations from
 """
 import yaml
 from pathlib import Path
-from candore.config import settings, CURRENT_DIRECTORY
 from functools import cached_property
 
 
 class Variations:
+
+    def __int__(self, settings):
+        self.settings = settings
+
     def get_paths(self, variations, prefix='', separator='/'):
         paths = []
         if isinstance(variations, dict):
@@ -24,7 +27,7 @@ class Variations:
 
     @cached_property
     def variations(self):
-        templates_path = Path(CURRENT_DIRECTORY, settings.candore.var_file)
+        templates_path = Path(self.settings.candore.var_file)
         if not templates_path.exists():
             print(f"The file {templates_path} does not exist.")
         with templates_path.open() as yaml_file:

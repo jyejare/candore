@@ -49,9 +49,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-satellite = ["satellite.can"]
 test = [
     "mock",
+    "pre-commit",
     "pytest",
     "pytest-cov",
     "pytest-mock",
