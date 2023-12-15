@@ -10,7 +10,6 @@ Parser classes must currently implement the following methods:
 https://www.google.com/search?q=apix
 """
 import attr
-from logzero import logger
 from lxml import html
 
 

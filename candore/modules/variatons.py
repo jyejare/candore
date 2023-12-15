@@ -2,17 +2,17 @@
 A module responsible for calculating expected and skipped variations from
 `conf/variations` yaml file and convert them into processable list
 """
-import yaml
-from pathlib import Path
 from functools import cached_property
+from pathlib import Path
+
+import yaml
 
 
 class Variations:
-
     def __int__(self, settings):
         self.settings = settings
 
-    def get_paths(self, variations, prefix='', separator='/'):
+    def get_paths(self, variations, prefix="", separator="/"):
         paths = []
         if isinstance(variations, dict):
             for key, value in variations.items():
@@ -21,7 +21,7 @@ class Variations:
             for item in variations:
                 paths.extend(self.get_paths(item, prefix, separator))
         else:
-            paths.append(f'{prefix}{variations}')
+            paths.append(f"{prefix}{variations}")
 
         return paths
 
@@ -36,8 +36,8 @@ class Variations:
 
     @cached_property
     def expected_variations(self):
-        return self.get_paths(variations=self.variations.get('expected_variations'))
+        return self.get_paths(variations=self.variations.get("expected_variations"))
 
     @cached_property
     def skipped_variations(self):
-        return self.get_paths(variations=self.variations.get('skipped_variations'))
+        return self.get_paths(variations=self.variations.get("skipped_variations"))

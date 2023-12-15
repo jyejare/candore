@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
 """A collection of miscellaneous helpers that don't quite fit in."""
-import yaml
 from copy import deepcopy
 from pathlib import Path
+
+import yaml
 from logzero import logger
 
 
@@ -86,11 +87,12 @@ def save_api(api_name, version, api_dict, data_dir=None, compact=False, mock=Fal
     """Save the dict to yaml, if the file doesn't exist"""
     if mock:
         a_path = Path(
-            f"{data_dir}tests/APIs/{api_name}/{version}{'-comp' if compact else ''}.yaml"
+            f"{data_dir}tests/APIs/{api_name}/{version}"
+            f"{'-comp' if compact else ''}.yaml"
         )
     else:
         a_path = Path(
-            f"{data_dir}APIs/{api_name}/{version}{'-comp' if compact else ''}.yaml"
+            f"{data_dir}APIs/{api_name}/{version}" f"{'-comp' if compact else ''}.yaml"
         )
     a_path.parent.mkdir(parents=True, exist_ok=True)
     logger.info(f"Saving {api_name} v{version} to {a_path}")

@@ -1,7 +1,8 @@
+import asyncio
+from functools import cached_property
+
 import aiohttp
 
-from functools import cached_property
-import asyncio
 
 class Extractor:
     def __init__(self, settings, apilister=None):
@@ -22,12 +23,12 @@ class Extractor:
 
     @cached_property
     def dependent_components(self):
-        if hasattr(self.settings, 'components'):
+        if hasattr(self.settings, "components"):
             return self.settings.components.dependencies
 
     @cached_property
     def ignore_components(self):
-        if hasattr(self.settings, 'components'):
+        if hasattr(self.settings, "components"):
             return self.settings.components.ignore
 
     @cached_property
@@ -36,7 +37,9 @@ class Extractor:
 
     async def _start_session(self):
         if not self.client:
-            self.client = aiohttp.ClientSession(auth=self.auth, connector=self.connector)
+            self.client = aiohttp.ClientSession(
+                auth=self.auth, connector=self.connector
+            )
         return self.client
 
     async def _end_session(self):
@@ -53,34 +56,38 @@ class Extractor:
         async with self.client.get(**get_params) as response:
             if response.status == 200:
                 _paged_results = await response.json()
-                _paged_results = _paged_results.get('results')
+                _paged_results = _paged_results.get("results")
                 return _paged_results
 
     async def fetch_component_entities(self, **comp_params):
         entity_data = []
-        endpoint = comp_params.get('endpoint', None)
-        data = comp_params.get('data')
-        dependency = comp_params.get('dependency', None)
-        _request = {'url': self.base+'/'+endpoint, 'params': {}}
+        endpoint = comp_params.get("endpoint", None)
+        data = comp_params.get("data")
+        dependency = comp_params.get("dependency", None)
+        _request = {"url": self.base + "/" + endpoint, "params": {}}
         if data and dependency:
-            _request['params'].update({f'{dependency}_id': data})
+            _request["params"].update({f"{dependency}_id": data})
         async with self.client.get(**_request) as response:
             if response.status == 200:
                 results = await response.json()
-                if 'results' in results:
-                    entities = results.get('results')
+                if "results" in results:
+                    entities = results.get("results")
                     entity_data.extend(entities)
                 else:
-                    # Return an empty directory for endpoints like services, api etc
+                    # Return an empty directory for endpoints
+                    # like services, api etc
                     # which does not have results
                     return entity_data
         # If the entity has multiple pages, fetch them all
         if self.full:
-            total_pages = results.get('total') // results.get('per_page') + 1
+            total_pages = results.get("total") // results.get("per_page") + 1
             if total_pages > 1:
-                print(f'Endpoint {endpoint} has {total_pages} pages. This would take some time ....')
-                for page in range(2, total_pages+1):
-                    _request['params'].update({'page': page})
+                print(
+                    f"Endpoint {endpoint} has {total_pages} pages. "
+                    "This would take some time ...."
+                )
+                for page in range(2, total_pages + 1):
+                    _request["params"].update({"page": page})
                     page_entities = await self.paged_results(**_request)
                     entity_data.extend(page_entities)
         return entity_data
@@ -88,11 +95,10 @@ class Extractor:
     async def dependency_ids(self, dependency):
         # All the Ids of a specific dependency
         # e.g Organization IDs 1, 2, 3, 4
-        endpoint = self.api_endpoints[f'{dependency}s'][0]
+        endpoint = self.api_endpoints[f"{dependency}s"][0]
         depe_lists = await self.fetch_component_entities(endpoint=endpoint)
-        depen_ids = [dep_dict['id'] for dep_dict in depe_lists]
+        depen_ids = [dep_dict["id"] for dep_dict in depe_lists]
         return depen_ids
-
 
     async def component_params(self, component_endpoint):
         """
@@ -104,7 +110,7 @@ class Extractor:
         data = {}
         dependency = None
         # remove ignored endpoints
-        _last = component_endpoint.rsplit('/')[-1]
+        _last = component_endpoint.rsplit("/")[-1]
         # Ignorable endpoint
         if self.ignore_components and _last in self.ignore_components:
             return
@@ -112,7 +118,7 @@ class Extractor:
         if self.dependent_components and _last in self.dependent_components.keys():
             dependency = self.dependent_components[_last]
             data = await self.dependency_ids(dependency)
-        return {'endpoint': component_endpoint, 'data': data, 'dependency': dependency}
+        return {"endpoint": component_endpoint, "data": data, "dependency": dependency}
 
     async def process_entities(self, endpoints):
         """
@@ -124,10 +130,13 @@ class Extractor:
             comp_params = await self.component_params(component_endpoint=endpoint)
             if comp_params:
                 entities = []
-                if isinstance(comp_params.get('data'), list):
-                    for data_point in comp_params.get('data'):
+                if isinstance(comp_params.get("data"), list):
+                    for data_point in comp_params.get("data"):
                         depen_data = await self.fetch_component_entities(
-                            endpoint=comp_params['endpoint'], dependency=comp_params.get('dependency'), data=data_point)
+                            endpoint=comp_params["endpoint"],
+                            dependency=comp_params.get("dependency"),
+                            data=data_point,
+                        )
                         if not depen_data:
                             continue
                         entities.extend(depen_data)
@@ -138,8 +147,8 @@ class Extractor:
         return comp_data
 
     async def extract_all_entities(self):
-        """
-        component, endpoints = `activation_key`, ['katello/api/activationkeys']
+        """Extract all entities fom all endpoints
+
         :return:
         """
         all_data = {}

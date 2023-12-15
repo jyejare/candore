@@ -22,7 +22,11 @@ class APIPie:
     def _compile_method(method_dict):
         """form the parameters and paths lists"""
         params = [
-            f'{param["name"]} ~ {"required" if param["required"] else "optional"} ~ {param["expected_type"]}'
+            (
+                f'{param["name"]} ~ '
+                f'{"required" if param["required"] else "optional"} ~ '
+                f'{param["expected_type"]}'
+            )
             for param in method_dict["params"]
         ]
         paths = [
@@ -41,9 +45,7 @@ class APIPie:
                 self._data[name]["methods"].append(
                     {method["name"]: self._compile_method(method)}
                 )
-                self.params.update(
-                    {param["name"]: param for param in method["params"]}
-                )
+                self.params.update({param["name"]: param for param in method["params"]})
 
     def yaml_format(self, ingore=None):
         """Return the compiled data in a yaml-friendly format"""
