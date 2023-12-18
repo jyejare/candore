@@ -29,10 +29,7 @@ class APIPie:
             )
             for param in method_dict["params"]
         ]
-        paths = [
-            f'{path["http_method"].upper()} {path["api_url"]}'
-            for path in method_dict["apis"]
-        ]
+        paths = [f'{path["http_method"].upper()} {path["api_url"]}' for path in method_dict["apis"]]
         return {"paths": paths, "params": params}
 
     def scrape_content(self, result):
@@ -42,9 +39,7 @@ class APIPie:
             logger.debug(f"Compiling {name} with {len(data['methods'])} methods")
             self._data[name] = {"methods": []}
             for method in data["methods"]:
-                self._data[name]["methods"].append(
-                    {method["name"]: self._compile_method(method)}
-                )
+                self._data[name]["methods"].append({method["name"]: self._compile_method(method)})
                 self.params.update({param["name"]: param for param in method["params"]})
 
     def yaml_format(self, ingore=None):

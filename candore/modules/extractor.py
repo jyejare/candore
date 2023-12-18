@@ -1,4 +1,4 @@
-import asyncio
+import asyncio  # noqa: F401
 from functools import cached_property
 
 import aiohttp
@@ -37,9 +37,7 @@ class Extractor:
 
     async def _start_session(self):
         if not self.client:
-            self.client = aiohttp.ClientSession(
-                auth=self.auth, connector=self.connector
-            )
+            self.client = aiohttp.ClientSession(auth=self.auth, connector=self.connector)
         return self.client
 
     async def _end_session(self):

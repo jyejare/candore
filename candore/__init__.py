@@ -1,4 +1,4 @@
-import asyncio
+import asyncio  # noqa: F401
 import json
 from pathlib import Path
 
@@ -31,9 +31,7 @@ class Candore:
         if mode not in ["pre", "post"]:
             raise ModeError("Extracting mode must be 'pre' or 'post'")
 
-        async with Extractor(
-            settings=self.settings, apilister=self.api_lister
-        ) as extractor:
+        async with Extractor(settings=self.settings, apilister=self.api_lister) as extractor:
             if full:
                 extractor.full = True
             data = await extractor.extract_all_entities()

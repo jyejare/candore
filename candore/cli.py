@@ -36,9 +36,6 @@ def candore(ctx, version, settings_file, components_file):
 def apis(ctx):
     """List API lister endpoints from Product"""
     print("List of API lister endpoints from Product")
-    import ipdb
-
-    ipdb.set_trace()
     candore_obj = ctx.parent.candore
     pprint(candore_obj.list_endpoints())
 
@@ -46,16 +43,12 @@ def apis(ctx):
 @candore.command(help="Extract and save data using API lister endpoints")
 @click.option("--mode", type=str, help="The mode must be 'pre' or 'post'")
 @click.option("-o", "--output", type=str, help="The output file name")
-@click.option(
-    "--full", is_flag=True, help="Extract data from all the pages of a component"
-)
+@click.option("--full", is_flag=True, help="Extract data from all the pages of a component")
 @click.pass_context
 def extract(ctx, mode, output, full):
     loop = asyncio.get_event_loop()
     candore_obj = ctx.parent.candore
-    loop.run_until_complete(
-        candore_obj.save_all_entities(mode=mode, output_file=output, full=full)
-    )
+    loop.run_until_complete(candore_obj.save_all_entities(mode=mode, output_file=output, full=full))
 
 
 @candore.command(help="Compare pre and post upgrade data")
@@ -69,9 +62,7 @@ def extract(ctx, mode, output, full):
     default="json",
     help="The type of report GSheet, JSON, or webpage",
 )
-@click.option(
-    "--record-evs", is_flag=True, help="Record Expected Variations in reporting"
-)
+@click.option("--record-evs", is_flag=True, help="Record Expected Variations in reporting")
 @click.pass_context
 def compare(ctx, pre, post, output, report_type, record_evs):
     candore_obj = ctx.parent.candore

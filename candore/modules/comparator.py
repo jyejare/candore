@@ -15,7 +15,8 @@ class Comparator:
 
     def remove_non_variant_key(self, key):
         reversed_bk = self.big_key[::-1]
-        reversed_bk.remove(key)
+        if key in reversed_bk:
+            reversed_bk.remove(key)
         self.big_key = reversed_bk[::-1]
 
     def remove_path(self, identy):
@@ -27,13 +28,8 @@ class Comparator:
     def record_variation(self, pre, post, var_details=None):
         big_key = [str(itm) for itm in self.big_key]
         full_path = "/".join(big_key)
-        var_full_path = "/".join(
-            [itm for itm in self.big_key if not isinstance(itm, int)]
-        )
-        if (
-            var_full_path in self.expected_variations
-            or var_full_path in self.skipped_variations
-        ):
+        var_full_path = "/".join([itm for itm in self.big_key if not isinstance(itm, int)])
+        if var_full_path in self.expected_variations or var_full_path in self.skipped_variations:
             if self.record_evs:
                 variation = {
                     "pre": pre,
@@ -89,9 +85,7 @@ class Comparator:
                     self.record_variation(pre, post)
         self.remove_path(unique_key)
 
-    def compare_all_pres_with_posts(
-        self, pre_data, post_data, unique_key="", var_details=None
-    ):
+    def compare_all_pres_with_posts(self, pre_data, post_data, unique_key="", var_details=None):
         if unique_key:
             self.big_key.append(unique_key)
         if type(pre_data) is dict:
@@ -104,7 +98,7 @@ class Comparator:
             self.remove_non_variant_key(unique_key)
 
     def compare_json(self, pre_file, post_file):
-        pre_data = post_Data = None
+        pre_data = post_data = None
 
         with open(pre_file, "r") as fpre:
             pre_data = json.load(fpre)

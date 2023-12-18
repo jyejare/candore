@@ -14,9 +14,7 @@ def get_api_list(data_dir=None, mock=False):
     if not api_dir.exists():
         return None
     # get all versions in directory, that aren't diffs
-    apis = [
-        (api.name, api.stat().st_mtime) for api in api_dir.iterdir() if api.is_dir()
-    ] or []
+    apis = [(api.name, api.stat().st_mtime) for api in api_dir.iterdir() if api.is_dir()] or []
     apis = [api for api, _ in sorted(apis, key=lambda x: x[1], reverse=True)]
     return apis
 
@@ -34,9 +32,7 @@ def get_ver_list(api_name, data_dir=None, mock=False):
     versions = [
         v_file.name.replace(".yaml", "")
         for v_file in save_path.iterdir()
-        if "-diff." not in v_file.name
-        and "-comp." not in v_file.name
-        and ".yaml" in v_file.name
+        if "-diff." not in v_file.name and "-comp." not in v_file.name and ".yaml" in v_file.name
     ] or []
     return sorted(versions, reverse=True)
 
@@ -87,13 +83,10 @@ def save_api(api_name, version, api_dict, data_dir=None, compact=False, mock=Fal
     """Save the dict to yaml, if the file doesn't exist"""
     if mock:
         a_path = Path(
-            f"{data_dir}tests/APIs/{api_name}/{version}"
-            f"{'-comp' if compact else ''}.yaml"
+            f"{data_dir}tests/APIs/{api_name}/{version}" f"{'-comp' if compact else ''}.yaml"
         )
     else:
-        a_path = Path(
-            f"{data_dir}APIs/{api_name}/{version}" f"{'-comp' if compact else ''}.yaml"
-        )
+        a_path = Path(f"{data_dir}APIs/{api_name}/{version}" f"{'-comp' if compact else ''}.yaml")
     a_path.parent.mkdir(parents=True, exist_ok=True)
     logger.info(f"Saving {api_name} v{version} to {a_path}")
     with a_path.open("w") as f:

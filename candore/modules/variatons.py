@@ -9,7 +9,7 @@ import yaml
 
 
 class Variations:
-    def __int__(self, settings):
+    def __init__(self, settings):
         self.settings = settings
 
     def get_paths(self, variations, prefix="", separator="/"):

@@ -27,13 +27,10 @@ class VersionDiff:
             self.api_name = get_latest(data_dir=self.data_dir, mock=self.mock)
         if not self.ver1:
             # get the latest saved version
-            self.ver1 = get_latest(
-                api_name=self.api_name, data_dir=self.data_dir, mock=self.mock
-            )
+            self.ver1 = get_latest(api_name=self.api_name, data_dir=self.data_dir, mock=self.mock)
         if not self.ver2:
             # get the version before ver1
-            self.ver2 = get_previous(
-                self.api_name, self.ver1, self.data_dir, self.mock)
+            self.ver2 = get_previous(self.api_name, self.ver1, self.data_dir, self.mock)
 
     @staticmethod
     def _truncate(diff_dict):
@@ -161,8 +158,7 @@ class VersionDiff:
         else:
             ftype = "comp-diff" if self.compact else "diff"
             fpath = Path(
-                f"{self.data_dir}APIs/{self.api_name}/"
-                f"{self.ver2}-to-{self.ver1}-{ftype}.yaml"
+                f"{self.data_dir}APIs/{self.api_name}/" f"{self.ver2}-to-{self.ver1}-{ftype}.yaml"
             )
         if fpath.exists():
             fpath.unlink()
