@@ -1,13 +1,16 @@
 """Explore and API and save the results."""
-import aiohttp
 import asyncio
+import time
+from pathlib import Path
+
+import aiohttp
 import attr
 import requests
-import time
 import yaml
 from logzero import logger
-from pathlib import Path
-from apix.parsers import apipie, test
+
+from apix.parsers import apipie
+from apix.parsers import test
 
 
 @attr.s()
@@ -35,7 +38,9 @@ class AsyncExplorer:
             logger.warning("No known parser specified! Please review documentation.")
 
     async def _async_get(self, session, link):
-        """visit a page and download the content, returning the link and content"""
+        """
+        visit a page and download the content returning the link and content
+        """
         async with session.get(self.host_url + link[1], ssl=False) as response:
             content = await response.read()
             logger.debug(link[1])
@@ -53,15 +58,15 @@ class AsyncExplorer:
                 self._queue.append(result)
 
     def _visit_links(self, links, retries=3):
-        """main controller for asynchronous page visiting, will attempt 3 retries"""
+        """
+        Main controller for asynchronous page visiting, will attempt 3 retries
+        """
         try:
             loop = asyncio.get_event_loop()
             loop.run_until_complete(self._async_loop(links))
-        except aiohttp.client_exceptions.ServerDisconnectedError as err:
+        except aiohttp.client_exceptions.ServerDisconnectedError:
             logger.warning(
-                "Lost connection to host.{}".join(
-                    "Retrying in 10 seconds" if retries else ""
-                )
+                "Lost connection to host.".join("Retrying in 10 seconds" if retries else "")
             )
             if retries:
                 time.sleep(10)
@@ -113,8 +118,7 @@ class AsyncExplorer:
         result = requests.get(self.host_url + self.base_path, verify=False)
         if not result:
             logger.warning(
-                f"I couldn't find anything useful at "
-                f"{self.host_url}{self.base_path}."
+                f"I couldn't find anything useful at " f"{self.host_url}{self.base_path}."
             )
             return
         self.base_path = self.base_path.replace(".html", "")  # for next step

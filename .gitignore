@@ -1,0 +1,6 @@
+settings.yaml
+**/__pycache__/
+*.json
+*.csv
+.idea
+trust

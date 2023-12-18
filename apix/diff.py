@@ -1,10 +1,14 @@
 # -*- encoding: utf-8 -*-
 """Determine the changes between two API versions."""
+from pathlib import Path
+
 import attr
 import yaml
-from pathlib import Path
 from logzero import logger
-from apix.helpers import get_latest, get_previous, load_api
+
+from apix.helpers import get_latest
+from apix.helpers import get_previous
+from apix.helpers import load_api
 
 
 @attr.s()
@@ -23,9 +27,7 @@ class VersionDiff:
             self.api_name = get_latest(data_dir=self.data_dir, mock=self.mock)
         if not self.ver1:
             # get the latest saved version
-            self.ver1 = get_latest(
-                api_name=self.api_name, data_dir=self.data_dir, mock=self.mock
-            )
+            self.ver1 = get_latest(api_name=self.api_name, data_dir=self.data_dir, mock=self.mock)
         if not self.ver2:
             # get the version before ver1
             self.ver2 = get_previous(self.api_name, self.ver1, self.data_dir, self.mock)
@@ -150,12 +152,13 @@ class VersionDiff:
 
         if self.mock:
             fpath = Path(
-                f"{self.data_dir}tests/APIs/{self.api_name}/{self.ver2}-to-{self.ver1}-diff.yaml"
+                f"{self.data_dir}tests/APIs/{self.api_name}"
+                f"/{self.ver2}-to-{self.ver1}-diff.yaml"
             )
         else:
             ftype = "comp-diff" if self.compact else "diff"
             fpath = Path(
-                f"{self.data_dir}APIs/{self.api_name}/{self.ver2}-to-{self.ver1}-{ftype}.yaml"
+                f"{self.data_dir}APIs/{self.api_name}/" f"{self.ver2}-to-{self.ver1}-{ftype}.yaml"
             )
         if fpath.exists():
             fpath.unlink()

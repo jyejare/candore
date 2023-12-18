@@ -10,7 +10,6 @@ Parser classes must currently implement the following methods:
 https://www.google.com/search?q=apix
 """
 import attr
-from logzero import logger
 from lxml import html
 
 
@@ -47,12 +46,7 @@ class TestParser:
         links, last = [], None
         for link in g_links:
             url = link[2].replace("../", "")
-            if (
-                "JacobCallahan" in url
-                and "sparkline" not in url
-                and link[0].text
-                and url != last
-            ):
+            if "JacobCallahan" in url and "sparkline" not in url and link[0].text and url != last:
                 links.append((link[0].text, url))
                 last = url
         return links

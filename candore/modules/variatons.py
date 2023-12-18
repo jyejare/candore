@@ -2,14 +2,17 @@
 A module responsible for calculating expected and skipped variations from
 `conf/variations` yaml file and convert them into processable list
 """
-import yaml
-from pathlib import Path
-from candore.config import settings, CURRENT_DIRECTORY
 from functools import cached_property
+from pathlib import Path
+
+import yaml
 
 
 class Variations:
-    def get_paths(self, variations, prefix='', separator='/'):
+    def __init__(self, settings):
+        self.settings = settings
+
+    def get_paths(self, variations, prefix="", separator="/"):
         paths = []
         if isinstance(variations, dict):
             for key, value in variations.items():
@@ -18,13 +21,13 @@ class Variations:
             for item in variations:
                 paths.extend(self.get_paths(item, prefix, separator))
         else:
-            paths.append(f'{prefix}{variations}')
+            paths.append(f"{prefix}{variations}")
 
         return paths
 
     @cached_property
     def variations(self):
-        templates_path = Path(CURRENT_DIRECTORY, settings.candore.var_file)
+        templates_path = Path(self.settings.candore.var_file)
         if not templates_path.exists():
             print(f"The file {templates_path} does not exist.")
         with templates_path.open() as yaml_file:
@@ -33,8 +36,8 @@ class Variations:
 
     @cached_property
     def expected_variations(self):
-        return self.get_paths(variations=self.variations.get('expected_variations'))
+        return self.get_paths(variations=self.variations.get("expected_variations"))
 
     @cached_property
     def skipped_variations(self):
-        return self.get_paths(variations=self.variations.get('skipped_variations'))
+        return self.get_paths(variations=self.variations.get("skipped_variations"))
