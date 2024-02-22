@@ -76,6 +76,8 @@ class Extractor:
                     # like services, api etc
                     # which does not have results
                     return entity_data
+            else:
+                return entity_data
         # If the entity has multiple pages, fetch them all
         if self.full:
             total_pages = results.get("total") // results.get("per_page") + 1
