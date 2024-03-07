@@ -44,7 +44,11 @@ class Comparator:
             variation = {"pre": pre, "post": post, "variation": var_details or ""}
             self.big_compare.update({full_path: variation})
 
-    def _is_data_type_dict(self, pre, post):
+    def _is_data_type_dict(self, pre, post, unique_key=""):
+        if (pre and 'id' in pre) and (post and 'id' in post):
+            # Dont compare the entities if the ids are not the same
+            if pre['id'] != post['id']:
+                return
         for pre_key in pre:
             if pre_key in post:
                 key = pre_key
@@ -56,6 +60,7 @@ class Comparator:
                     unique_key=pre_key,
                     var_details="Post lookup key missing",
                 )
+        self.remove_path(unique_key)
 
     def _is_data_type_list(self, pre, post, unique_key=""):
         for pre_entity in pre:
@@ -89,7 +94,7 @@ class Comparator:
         if unique_key:
             self.big_key.append(unique_key)
         if type(pre_data) is dict:
-            self._is_data_type_dict(pre_data, post_data)
+            self._is_data_type_dict(pre_data, post_data, unique_key=unique_key)
         elif type(pre_data) is list:
             self._is_data_type_list(pre_data, post_data, unique_key=unique_key)
         else:
