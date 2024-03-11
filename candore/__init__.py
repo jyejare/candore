@@ -1,6 +1,7 @@
 import asyncio  # noqa: F401
 import json
 from pathlib import Path
+from pprint import pprint
 
 import click
 
@@ -8,6 +9,7 @@ from candore.errors import ModeError
 from candore.modules.api_lister import APILister
 from candore.modules.comparator import Comparator
 from candore.modules.extractor import Extractor
+from candore.modules.finder import Finder
 from candore.modules.report import Reporting
 
 
@@ -58,3 +60,9 @@ class Candore:
         results = comp.compare_json(pre_file=pre_file, post_file=post_file)
         reporter = Reporting(results=results)
         reporter.generate_report(output_file=output, output_type=report_type)
+
+    def find_path(self, path, json_file, delimiter):
+        finder = Finder()
+        data = finder.find(path=path, json_file=json_file, delimiter=delimiter)
+        if data:
+            pprint(data)

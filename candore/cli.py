@@ -75,5 +75,23 @@ def compare(ctx, pre, post, output, report_type, record_evs):
     )
 
 
+@candore.command(help="JSON Reader for reading the specific path data from entities data file")
+@click.option(
+    "--path",
+    type=str,
+    help="The path to search the data from.\n"
+    "Path contents could divided by some delimiter.\n"
+    "e.g entity/5/description",
+)
+@click.option(
+    "--data-file", type=str, help="The data file from which to search the data on a given path"
+)
+@click.option("--delimiter", type=str, default='/', help="Settings file path. Default is '/'")
+@click.pass_context
+def reader(ctx, path, data_file, delimiter):
+    candore_obj = ctx.parent.candore
+    candore_obj.find_path(path=path, json_file=data_file, delimiter=delimiter)
+
+
 if __name__ == "__main__":
     candore()
